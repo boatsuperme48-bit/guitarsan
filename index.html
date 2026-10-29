@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Virtual Guitar — เกมกีตาร์เสมือนจริง</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#eceee8;--pn:#fbfbf7;--tx:#16202b;--mt:#5f6b78;--ac:#a8700c;--on:#fff;--bd:#d4d9d0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f151c;--pn:#18212b;--tx:#e8ecef;--mt:#8d9aa8;--ac:#e5b04b;--on:#1b1306;--bd:#2a3644}}
+:root[data-theme=dark]{--bg:#0f151c;--pn:#18212b;--tx:#e8ecef;--mt:#8d9aa8;--ac:#e5b04b;--on:#1b1306;--bd:#2a3644}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 Prompt,'Noto Sans Thai',system-ui,sans-serif}
+.w{max-width:1080px;margin:auto;padding:14px}
+h1{font-size:22px;margin:4px 0 0}h2{font-size:17px;margin:0 0 8px}
+.c{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:12px 0}
+.mt{color:var(--mt);font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
+button,select,input{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:6px 10px}
+input[type=range]{padding:0;width:120px}input[type=checkbox]{width:auto}
+button{cursor:pointer}button:hover{border-color:var(--ac)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac)}
+button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+.top{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+#nm{font-size:44px;font-weight:600;line-height:1}
+#fv{font-size:22px;padding:2px 10px}
+#nk{width:100%;height:auto;touch-action:none;cursor:pointer;user-select:none;display:block;margin-top:6px}
+.dt{fill:var(--ac)}.nt{fill:var(--on);font:600 11px Prompt;text-anchor:middle}
+.mk{fill:var(--mt);font:700 18px Prompt;text-anchor:middle}.op{fill:none;stroke:var(--ac);stroke-width:2.5}
+.sn{fill:var(--mt);font:600 13px Prompt}
+.sp.hot{stroke:#fff;filter:drop-shadow(0 0 3px #ffd27a)}
+#sy{min-height:22px;color:var(--ac);font-size:13px}
+.hud{display:flex;gap:24px;flex-wrap:wrap;align-items:center}.hud small{display:block;color:var(--mt)}.hud b{font-size:30px}
+#bd i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--bd);margin-right:6px}#bd i.on{background:var(--ac)}
+#gd{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px}
+.gc{border:1px solid var(--bd);border-radius:8px;padding:6px;text-align:center;cursor:pointer;font-size:13px}.gc.on{outline:2px solid var(--ac)}
+.gc svg{width:100%;height:86px}
+.ml{stroke:var(--mt);stroke-width:1}.ml.n0{stroke:var(--tx);stroke-width:3.5}.mx{fill:var(--mt);font:12px Prompt;text-anchor:middle}.mo{fill:none;stroke:var(--mt)}.md{fill:var(--ac)}.mf{fill:var(--mt);font:10px Prompt}
+kbd{background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:0 6px;font:600 13px Prompt}
+.kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:4px 18px;margin:0;padding:0;list-style:none}
+</style></head><body><div class="w">
+<h1>🎸 Virtual Guitar</h1>
+<p class="mt" style="margin:0">คลิกบนหน้านี้หนึ่งครั้งเพื่อเปิดเสียงและคีย์บอร์ด จากนั้นเลือกคอร์ดแล้วดีดสายด้วยเมาส์หรือปุ่มคีย์บอร์ด</p>
+
+<section class="c">
+<div class="top"><div><div id="nm">G</div><div id="al" class="mt"></div></div><button id="fv" title="บันทึกเป็นคอร์ดโปรด">☆</button><div id="nt" class="mt"></div></div>
+<svg id="nk" viewBox="0 0 880 256" role="img" aria-label="คอกีตาร์: คลิกหรือลากผ่านสายเพื่อดีด"></svg>
+<div id="vc" class="row" aria-label="รูปแบบการจับคอร์ด"></div>
+<div class="row"><button id="bP">▶ Play (ดีดลง)</button><button id="bU">⬆ ดีดขึ้น</button><button id="bS">■ Stop</button><button id="bM">🤚 Mute</button><button id="bA">🔊 เสียง</button><button id="bR">↺ Reset</button></div>
+<div class="row"><label>Volume <input type="range" id="vo" min="0" max="1" step=".05"></label><label>Sustain <input type="range" id="su" min=".5" max="4" step=".1"></label><label>Reverb <input type="range" id="rv" min="0" max="1" step=".05"></label></div>
+<div id="sy"></div>
+<div id="rt" class="row"></div><div id="ty" class="row"></div>
+</section>
+
+<section class="c"><h2>ปุ่มควบคุม</h2>
+<ul class="kg">
+<li><kbd>A</kbd>–<kbd>G</kbd> เลือกคอร์ดเมเจอร์</li>
+<li><kbd>Shift</kbd> + ตัวอักษร = ชาร์ป (#)</li>
+<li><kbd>Ctrl</kbd> + ตัวอักษร = ไมเนอร์ (m)</li>
+<li><kbd>Alt</kbd> + ตัวอักษร = เซเวนธ์ (7)</li>
+<li>รวมได้ เช่น <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>G</kbd> = G#m, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>G</kbd> = Gm7</li>
+<li><kbd>1</kbd>–<kbd>6</kbd> ดีดสาย 6 (E ต่ำ) ถึงสาย 1 (E สูง)</li>
+<li><kbd>Space</kbd> ดีดลงทั้งคอร์ด · <kbd>Shift</kbd>+<kbd>Space</kbd> ดีดขึ้น</li>
+<li><kbd>Esc</kbd> หยุดเสียงทั้งหมด</li>
+</ul>
+<p class="mt" style="margin-bottom:0">คอร์ดแบบ 6, 9, maj7, dim, +, sus2, sus4 เลือกจากแถบด้านบน เมาส์: คลิกสายเดียว หรือกดค้างแล้วลากผ่านสาย (ลากลง = Downstroke, ลากขึ้น = Upstroke ยิ่งลากเร็วยิ่งดังและถี่) บน Windows ปุ่ม Alt+Shift อาจสลับภาษา ใช้ปุ่มบนหน้าจอแทนได้</p></section>
+
+<section class="c"><h2>🎯 โหมดฝึกเปลี่ยนคอร์ด</h2>
+<div class="row"><input id="pg" value="G D Em C" aria-label="ลำดับคอร์ด" size="18"><label>BPM <input id="bpm" type="number" value="80" min="40" max="200" style="width:80px"></label><label>จังหวะ/คอร์ด <select id="bt"><option>2</option><option>3</option><option selected>4</option></select></label><label><input type="checkbox" id="mt" checked> Metronome</label><button id="pb">▶ เริ่มฝึก</button></div>
+<div class="hud"><div><small>ตอนนี้</small><b id="cu">—</b></div><div><small>ถัดไป</small><b id="nx">—</b></div><div id="bd"></div></div>
+<div id="sc" class="mt">Free Play: ยังไม่ได้เริ่มฝึก เลือกคอร์ดแล้วดีดได้อิสระ · โหมดลำดับคอร์ด: กด “เริ่มฝึก” แล้วเปลี่ยนคอร์ดและดีดให้ตรงต้นห้อง</div></section>
+
+<section class="c"><h2>แผนภาพคอร์ด (ตามตารางที่แนบมา)</h2>
+<div class="row"><input id="q" placeholder="ค้นหา เช่น G#m7, Cmaj7, Bb, F#dim"><select id="fr"></select><select id="ft"></select><label><input type="checkbox" id="fo"> เฉพาะโปรด</label></div>
+<div id="fl" class="row"></div><div id="gd"></div></section>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],FL={1:'Db',3:'Eb',6:'Gb',8:'Ab',10:'Bb'},OPEN=[40,45,50,55,59,64];
+const TY=[['maj','',[0,4,7]],['m','m',[0,3,7]],['7','7',[0,4,7,10]],['m7','m7',[0,3,7,10]],['maj7','maj7',[0,4,7,11]],['6','6',[0,4,7,9]],['m6','m6',[0,3,7,9]],['9','9',[0,4,7,10,2]],['m9','m9',[0,3,7,10,2]],['dim','dim',[0,3,6]],['aug','+',[0,4,8]],['sus2','sus2',[0,2,7]],['sus4','sus4',[0,5,7]]];
+const T={};TY.forEach(t=>T[t[0]]={s:t[1]});
+// รูปแบบเคลื่อนที่ได้ (ตัวเลข = เฟรตสัมพัทธ์จากเฟรตของโน้ตราก, x = ไม่ดีด) สาย 6→1
+const SE={maj:'022100',m:'022000','7':'020100',m7:'020000',maj7:'021100','6':'022120',m6:'022020','9':'020102',m9:'020002',dim:'012020',aug:'032110',sus2:'024400',sus4:'022200'}; // รากอยู่สาย 6 (ทรง E)
+const SA={maj:'x02220',m:'x02210','7':'x02020',m7:'x02010',maj7:'x02120','6':'x02222',m6:'x02212','9':'x02423',m9:'x02413',dim:'x01212',aug:'x03221',sus2:'x02200',sus4:'x02230'}; // รากอยู่สาย 5 (ทรง A)
+const OP={C:'x32010',G:'320003',D:'xx0232',F:'xx3211',Dm:'xx0231',C7:'x32310',G7:'320001',D7:'xx0212',B7:'x21202',Dm7:'xx0211',Cmaj7:'x32000',Gmaj7:'320002',Dmaj7:'xx0222',Fmaj7:'xx3210',Dsus2:'xx0230',Dsus4:'xx0233'};
+const P=s=>[...s].map(c=>c=='x'?-1:parseInt(c,16));
+// ตารางที่แนบมา (สาย 6→1, x = ไม่ดีด) แถว: Ab A Bb B C Db D Eb E F F# G · คอลัมน์: maj m 6 7 9 m6 m7 maj7 dim7 + sus4
+const CHR=[8,9,10,11,0,1,2,3,4,5,6,7],CHT=['maj','m','6','7','9','m6','m7','maj7','dim','aug','sus4'],CH={};
+`466544 466444 431111 xx1112 xx1312 xx3444 xx1102 xx1113 xx0101 xx2110 xx1124
+x02220 x02210 x02222 x02223 x02423 002212 x02213 x02120 xx1212 x03221 xx2230
+x13331 x13321 113333 xx3334 113111 xx3323 xx3324 x1323x xx2323 xx0332 xx3341
+x24442 x24432 224444 x21202 x21222 xx4434 x24232 x2434x xx0101 xx5443 xx4452
+332010 x35543 x02213 032310 x32333 xx1213 xx1313 x32000 xx1212 xx2110 xx3013
+xx3121 xx2120 xx3324 xx3424 x43444 xx2324 xx2424 x43111 xx2323 xx3221 xx6674
+xx0232 xx0231 x00202 xx0212 200210 xx0201 xx0211 xx0222 xx0101 xx0332 xx0233
+xx5343 xx4342 xx1313 xx1323 111321 xx1312 xx1322 xx1333 xx1212 xx1003 xx1344
+022100 022000 022120 022130 020102 022020 020000 02110x xx2323 xx2110 022200
+133211 133111 xx0211 131211 xx3243 xx0111 131111 xx3210 xx0101 xx3221 xx3311
+244322 244222 x4434x xx4320 xx4354 xx1222 xx2222 xx4321 xx1212 xx4332 xx4422
+320003 355333 320000 320001 300201 xx2333 353333 xx5432 xx2323 xx1003 xx0013`.split('\n').forEach((l,i)=>l.split(' ').forEach((s,j)=>CH[CHR[i]+'.'+CHT[j]]=P(s)));
+const nmFull=(r,t)=>NN[r]+T[t].s,fk=(r,t)=>r+'.'+t;
+function voic(r,t){const o=[],k=nmFull(r,t),ch=CH[r+'.'+t];if(ch)o.push(ch);if(OP[k]){const a=P(OP[k]);if(!o.some(x=>x+''==a+''))o.push(a)}
+ [[SE,(r+8)%12],[SA,(r+3)%12]].map(([S,b])=>[b,P(S[t]).map(x=>x<0?-1:x+b)]).sort((a,b)=>a[0]-b[0]).forEach(([,f])=>{if(!o.some(x=>x+''==f+''))o.push(f)});return o}
+const AL={'':'maj',maj:'maj',M:'maj',m:'m',min:'m','-':'m','7':'7',m7:'m7',min7:'m7',maj7:'maj7',M7:'maj7','6':'6',m6:'m6','9':'9',m9:'m9',dim:'dim',o:'dim',aug:'aug','+':'aug',sus2:'sus2',sus4:'sus4',sus:'sus4'};
+function parse(s){const m=/^([A-Ga-g])([#b♯♭]?)(.*)$/.exec(s.trim());if(!m)return null;let r=NN.indexOf(m[1].toUpperCase());if(m[2]=='#'||m[2]=='♯')r++;else if(m[2])r--;const t=AL[m[3]]||AL[m[3].toLowerCase()];return t?[(r+12)%12,t]:null}
+
+let R=7,Ty='maj',VI=0,vol=.8,sus=2.5,rev=.3,snd=true,palm=false,fav=new Set(),pr=null;
+try{fav=new Set(JSON.parse(localStorage.getItem('vg-fav')||'[]'))}catch(e){}
+const saveFav=()=>{try{localStorage.setItem('vg-fav',JSON.stringify([...fav]))}catch(e){}};
+const V=()=>{const L=voic(R,Ty);return L[Math.min(VI,L.length-1)]};
+let st;function say(m){$('#sy').textContent=m;clearTimeout(st);st=setTimeout(()=>$('#sy').textContent='',2500)}
+
+/* ---------- เสียง: Karplus-Strong (จำลองสายกีตาร์) ---------- */
+let ctx,mst,wet,dry,cache={},vo=[];
+function au(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();mst=ctx.createGain();
+ const b=ctx.createBiquadFilter();b.type='peaking';b.frequency.value=230;b.gain.value=5;
+ const l=ctx.createBiquadFilter();l.type='lowpass';l.frequency.value=5200;
+ const cp=ctx.createDynamicsCompressor(),cv=ctx.createConvolver(),n=ctx.sampleRate*1.8|0,ir=ctx.createBuffer(2,n,ctx.sampleRate);
+ dry=ctx.createGain();wet=ctx.createGain();
+ for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.6)}
+ cv.buffer=ir;mst.connect(b);b.connect(l);l.connect(dry);l.connect(cv);cv.connect(wet);dry.connect(cp);wet.connect(cp);cp.connect(ctx.destination);mix()}
+ if(ctx.state!=='running')ctx.resume();return ctx}
+function mix(){if(!ctx)return;mst.gain.value=snd?vol:0;wet.gain.value=rev*1.2;dry.gain.value=1-rev*.3}
+function buf(m){const k=m+'|'+sus;if(cache[k])return cache[k];
+ const sr=ctx.sampleRate,f=440*Math.pow(2,(m-69)/12),N=Math.round(sr/f),len=Math.min(6,sus*2.5+.5)*sr|0,b=ctx.createBuffer(1,len,sr),o=b.getChannelData(0),d=new Float32Array(N);
+ let lp=0,mn=0;for(let i=0;i<N;i++){lp+=.55*((Math.random()*2-1)-lp);d[i]=lp;mn+=lp}mn/=N;for(let i=0;i<N;i++)d[i]-=mn;
+ const g=Math.exp(-1/((sr/N)*sus)),fd=sr*.06|0;
+ for(let i=0,j=0;i<len;i++){o[i]=d[j]*(i>len-fd?(len-i)/fd:1);d[j]=g*.5*(d[j]+d[(j+1)%N]);j=(j+1)%N}
+ return cache[k]={b,r:f*N/sr}} // r = ปรับ playbackRate ให้ตรงความถี่ Equal Temperament
+function pl(i,vel=.8,dl=0){const f=V()[i];if(f<0){say('สาย '+(6-i)+' เป็นสายที่ไม่ต้องดีดในคอร์ดนี้');return false}
+ const c=au(),t=c.currentTime+dl,B=buf(OPEN[i]+f),s=c.createBufferSource(),g=c.createGain();
+ s.buffer=B.b;s.playbackRate.value=B.r;g.gain.setValueAtTime(vel*1.6,t);
+ if(palm){g.gain.setValueAtTime(vel*1.6,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.25)}
+ s.connect(g);g.connect(mst);const p=vo[i];
+ if(p){p.g.gain.cancelScheduledValues(t);p.g.gain.setTargetAtTime(0,t,.025);try{p.s.stop(t+.2)}catch(e){}} // ตัดเฉพาะสายเดิมที่ถูกดีดซ้ำ
+ s.start(t);vo[i]={s,g};setTimeout(()=>vib(i,vel),dl*1000);return true}
+function damp(d=.1){if(!ctx)return;const t=ctx.currentTime;vo.forEach(p=>{if(p){p.g.gain.cancelScheduledValues(t);p.g.gain.setTargetAtTime(0,t,d/3);try{p.s.stop(t+d*3)}catch(e){}}});amp.fill(0);raf||(raf=requestAnimationFrame(anim))}
+function strum(dir,vel=.8){const o=[0,1,2,3,4,5];if(dir=='up')o.reverse();let k=0;o.forEach(i=>{if(V()[i]>=0)pl(i,vel*(.88+.12*k/5),k++*.022)});reg()}
+
+/* ---------- วาดคอกีตาร์ ---------- */
+const X0=64,FW=52,XE=X0+FW*15,Y0=34,SP=34,ys=[0,1,2,3,4,5].map(i=>Y0+i*SP),SN=['E','A','D','G','B','E'],nk=$('#nk');
+(function(){let h='<defs><linearGradient id="wd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a4a2a"/><stop offset="1" stop-color="#4a2c17"/></linearGradient></defs>';
+ h+=`<rect x="${X0}" y="14" width="${FW*15}" height="210" rx="4" fill="url(#wd)"/>`;
+ [3,5,7,9,15].forEach(f=>h+=`<circle cx="${X0+(f-.5)*FW}" cy="119" r="6" fill="#e8dcc4" opacity=".5"/>`);
+ [68,170].forEach(y=>h+=`<circle cx="${X0+11.5*FW}" cy="${y}" r="6" fill="#e8dcc4" opacity=".5"/>`);
+ for(let f=1;f<=15;f++)h+=`<line x1="${X0+f*FW}" y1="14" x2="${X0+f*FW}" y2="224" stroke="#bfb8aa" stroke-width="2.5"/><text x="${X0+(f-.5)*FW}" y="242" class="mf" style="text-anchor:middle">${f}</text>`;
+ h+=`<rect x="${X0-4}" y="12" width="7" height="214" fill="#efe6d2"/>`;
+ ys.forEach((y,i)=>h+=`<text x="14" y="${y+5}" class="sn">${SN[i]}</text>`);
+ ys.forEach((y,i)=>h+=`<path class="sp" stroke="${i<3?'#d9ae6c':'#e9e9e9'}" stroke-width="${[3.6,3,2.4,1.8,1.4,1.1][i]}" fill="none" d="M${X0} ${y}L${XE} ${y}"/>`);
+ nk.innerHTML=h+'<g id="dg"></g>'})();
+const sp=[...nk.querySelectorAll('.sp')],amp=Array(6).fill(0);let raf=0;
+function vib(i,v){amp[i]=6+8*v;raf||(raf=requestAnimationFrame(anim))}
+function anim(t){let on=0;sp.forEach((p,i)=>{const a=amp[i],y=ys[i];if(a>.15||p._v){const o=a>.15?a*Math.sin(t*.05*(1+(5-i)*.1)):0;p.setAttribute('d',`M${X0} ${y}Q${(X0+XE)/2} ${y+o} ${XE} ${y}`);p.classList.toggle('hot',a>1.2);p._v=a>.15;amp[i]=a>.15?a*.99:0;on|=a>.15}});raf=on?requestAnimationFrame(anim):0}
+function dots(){const f=V(),p=f.filter(v=>v>0),mf=p.length?Math.min(...p):0,ix=f.map((v,i)=>v==mf&&mf>0?i:-1).filter(i=>i>=0);let h='';
+ if(ix.length>1)h+=`<rect x="${X0+(mf-.5)*FW-13}" y="${ys[ix[0]]-13}" width="26" height="${ys[ix[ix.length-1]]-ys[ix[0]]+26}" rx="13" class="dt" opacity=".85"/>`;
+ f.forEach((v,i)=>{const y=ys[i],x=X0+(v-.5)*FW;if(v<0)h+=`<text x="44" y="${y+6}" class="mk">×</text>`;else if(v==0)h+=`<circle cx="44" cy="${y}" r="7" class="op"/>`;else h+=`<circle cx="${x}" cy="${y}" r="13" class="dt"/><text x="${x}" y="${y+4}" class="nt">${NN[(OPEN[i]+v)%12]}</text>`});
+ $('#dg').innerHTML=h;sp.forEach((s,i)=>s.style.opacity=f[i]<0?.3:1)}
+function mini(f){const p=f.filter(v=>v>0),mn=p.length?Math.min(...p):1,b=p.length&&Math.max(...p)>5?mn:1;let h='<svg viewBox="0 0 84 98">';
+ for(let j=0;j<=5;j++)h+=`<line x1="10" y1="${24+j*16}" x2="60" y2="${24+j*16}" class="ml${j==0&&b==1?' n0':''}"/>`;
+ f.forEach((v,i)=>{const x=10+i*10;h+=`<line x1="${x}" y1="24" x2="${x}" y2="88" class="ml"/>`;
+  if(v<0)h+=`<text x="${x}" y="19" class="mx">×</text>`;else if(v==0)h+=`<circle cx="${x}" cy="13" r="3.5" class="mo"/>`;else if(v>=b&&v<b+5)h+=`<circle cx="${x}" cy="${24+(v-b+.5)*16}" r="5" class="md"/>`});
+ return h+(b>1?`<text x="64" y="36" class="mf">${b}</text>`:'')+'</svg>'}
+
+/* ---------- UI ---------- */
+function ui(){const f=V(),L=voic(R,Ty);
+ $('#nm').textContent=nmFull(R,Ty);$('#al').textContent=FL[R]?'หรือ '+FL[R]+T[Ty].s:'';
+ $('#nt').textContent='โน้ต: '+f.map((v,i)=>v<0?'':NN[(OPEN[i]+v)%12]).filter(Boolean).join(' ')+' · เฟรตสาย 6→1: '+f.map(v=>v<0?'x':v).join(' ');
+ $('#vc').innerHTML=L.map((x,i)=>`<button data-v="${i}" class="${i==VI?'on':''}">${i+1}. ${i==0&&CH[R+'.'+Ty]?'ตามตาราง':x.includes(0)?'Open':'Barre fret '+Math.min(...x.filter(v=>v>0))}</button>`).join('');
+ $('#rt').innerHTML=NN.map((n,r)=>`<button data-r="${r}" class="${r==R?'on':''}">${n}${FL[r]?'/'+FL[r]:''}</button>`).join('');
+ $('#ty').innerHTML=TY.map(([t,s])=>`<button data-t="${t}" class="${t==Ty?'on':''}">${s||'Major'}</button>`).join('');
+ $('#fv').textContent=fav.has(fk(R,Ty))?'★':'☆';dots();
+ $('#fl').innerHTML=fav.size?[...fav].map(x=>{const[r,t]=x.split('.');return`<button data-r="${r}" data-t="${t}">★ ${nmFull(+r,t)}</button>`}).join(''):'<span class="mt">ยังไม่มีคอร์ดโปรด กดดาว ☆ ข้างชื่อคอร์ดเพื่อบันทึก</span>';
+ grid()}
+function grid(){const q=$('#q').value.trim().toLowerCase(),fr=$('#fr').value,ft=$('#ft').value,fo=$('#fo').checked;let h='';
+ for(let r=0;r<12;r++)for(const[t,s]of TY){const a=NN[r]+s,b=(FL[r]||NN[r])+s;
+  if(q?!(a.toLowerCase().startsWith(q)||b.toLowerCase().startsWith(q)):((fr=='cur'?r!=R:fr!='all'&&r!=+fr)||(ft!='all'&&t!=ft)))continue;
+  if(fo&&!fav.has(fk(r,t)))continue;
+  h+=`<div class="gc${r==R&&t==Ty?' on':''}" data-r="${r}" data-t="${t}"><b>${a}${FL[r]?' / '+b:''}</b>${mini(voic(r,t)[0])}</div>`}
+ $('#gd').innerHTML=h||'<p class="mt">ไม่พบคอร์ดที่ค้นหา</p>'}
+$('#fr').innerHTML='<option value="cur">ราก: ตามคอร์ดปัจจุบัน</option><option value="all">ราก: ทั้งหมด</option>'+NN.map((n,r)=>`<option value="${r}">${n}${FL[r]?'/'+FL[r]:''}</option>`).join('');
+$('#ft').innerHTML='<option value="all">ชนิด: ทั้งหมด</option>'+TY.map(([t,s])=>`<option value="${t}">${s||'Major'}</option>`).join('');
+function sel(r,t,v=0){R=r;Ty=t;VI=v;damp(.12);ui()}
+function ctl(){$('#vo').value=vol;$('#su').value=sus;$('#rv').value=rev;$('#bM').classList.toggle('on',palm);$('#bM').textContent=palm?'🤚 Mute: เปิด':'🤚 Mute';$('#bA').textContent=snd?'🔊 เสียง: เปิด':'🔇 เสียง: ปิด'}
+$('#rt').onclick=e=>{const b=e.target.closest('button');if(b)sel(+b.dataset.r,Ty)};
+$('#ty').onclick=e=>{const b=e.target.closest('button');if(b)sel(R,b.dataset.t)};
+$('#vc').onclick=e=>{const b=e.target.closest('button');if(b){VI=+b.dataset.v;damp(.12);ui()}};
+$('#fl').onclick=$('#gd').onclick=e=>{const b=e.target.closest('[data-r][data-t]');if(b)sel(+b.dataset.r,b.dataset.t)};
+$('#fv').onclick=()=>{const k=fk(R,Ty);fav.has(k)?fav.delete(k):fav.add(k);saveFav();ui()};
+['#q','#fr','#ft','#fo'].forEach(s=>$(s).oninput=grid);
+$('#bP').onclick=()=>strum('down');$('#bU').onclick=()=>strum('up');
+$('#bS').onclick=()=>{damp(.05);prEnd()};
+$('#bM').onclick=()=>{palm=!palm;ctl()};
+$('#bA').onclick=()=>{snd=!snd;au();mix();ctl()};
+$('#bR').onclick=()=>{prEnd();damp(.05);R=7;Ty='maj';VI=0;vol=.8;sus=2.5;rev=.3;palm=false;snd=true;cache={};ctl();mix();ui();say('รีเซ็ตแล้ว')};
+$('#vo').oninput=e=>{vol=+e.target.value;mix()};$('#rv').oninput=e=>{rev=+e.target.value;mix()};$('#su').oninput=e=>{sus=+e.target.value;cache={}};
+
+/* ---------- เมาส์: คลิก/ลากดีดสาย ---------- */
+let gs=null;const lt=Array(6).fill(0);
+const gy=e=>{const p=nk.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(nk.getScreenCTM().inverse()).y};
+nk.onpointerdown=e=>{e.preventDefault();nk.setPointerCapture(e.pointerId);const y=gy(e);let n=0,b=999;ys.forEach((v,i)=>{if(Math.abs(v-y)<b){b=Math.abs(v-y);n=i}});
+ gs={y,t:performance.now(),r:0};if(b<=15){gs.y=ys[n];if(pl(n,.8)){gs.r=1;lt[n]=gs.t;reg()}}};
+nk.onpointermove=e=>{if(!gs)return;const y=gy(e),t=performance.now(),a=gs.y,v=Math.abs(y-a)/Math.max(1,t-gs.t),up=y<a;
+ const o=ys.map((s,i)=>i).filter(i=>up?(ys[i]>=y&&ys[i]<a):(ys[i]>a&&ys[i]<=y));if(up)o.reverse();let k=0;
+ o.forEach(i=>{if(t-lt[i]<35)return;lt[i]=t;if(pl(i,Math.min(1,.4+v*.45),k*.012)){k++;if(!gs.r){gs.r=1;reg()}}});
+ gs.y=y;gs.t=t};
+nk.onpointerup=nk.onpointercancel=()=>{gs=null};
+
+/* ---------- คีย์บอร์ด ---------- */
+addEventListener('keydown',e=>{const tg=e.target;if(/INPUT|TEXTAREA|SELECT/.test(tg.tagName)||tg.isContentEditable)return;
+ let m=/^Key([A-G])$/.exec(e.code);
+ if(m){e.preventDefault();if(e.repeat)return;sel((NN.indexOf(m[1])+(e.shiftKey?1:0))%12,e.ctrlKey&&e.altKey?'m7':e.ctrlKey?'m':e.altKey?'7':'maj');return}
+ m=/^(?:Digit|Numpad)([1-6])$/.exec(e.code);
+ if(m){e.preventDefault();if(!e.repeat&&pl(+m[1]-1))reg();return}
+ if(e.code=='Space'){e.preventDefault();if(!e.repeat)strum(e.shiftKey?'up':'down');return}
+ if(e.code=='Escape'){damp(.05);prEnd()}});
+addEventListener('keyup',e=>{if(e.code=='Space'&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))e.preventDefault()});
+
+/* ---------- โหมดฝึก + Metronome ---------- */
+function clk(t,a){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=a?1600:1000;g.gain.setValueAtTime(.25*(snd?1:.0001),t);g.gain.exponentialRampToValueAtTime(.001,t+.05);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+.06)}
+function sch(){const spb=60/pr.bpm;while(pr.nt<ctx.currentTime+.15){const k=pr.k++,t=pr.nt;pr.nt+=spb;if($('#mt').checked)clk(t,k%pr.bt==0);const p=pr;setTimeout(()=>{if(pr===p)onB(k)},Math.max(0,(t-ctx.currentTime)*1000))}}
+function onB(k){const b=Math.floor(k/pr.bt),i=k%pr.bt;$('#bd').innerHTML=[...Array(pr.bt)].map((_,j)=>`<i class="${j==i?'on':''}"></i>`).join('');if(i)return;
+ $('#cu').textContent=nmFull(...pr.ch[b%pr.ch.length]);$('#nx').textContent=nmFull(...pr.ch[(b+1)%pr.ch.length]);
+ if(b>0){let ok=0,tm=0;for(let j=0;j<b;j++){const r=pr.rec[j];if(r){ok+=r.ok;tm+=r.tm}}
+  $('#sc').textContent=`คอร์ดถูก ${ok}/${b} (${Math.round(ok/b*100)}%) · จังหวะตรง ${tm}/${b} (${Math.round(tm/b*100)}%)`}}
+function reg(){if(!pr||!ctx)return;const spb=60/pr.bpm,x=(ctx.currentTime-pr.t0)/spb,bar=Math.round(x/pr.bt);if(bar<0||pr.rec[bar])return;
+ const tg=pr.ch[bar%pr.ch.length];pr.rec[bar]={ok:tg[0]==R&&tg[1]==Ty,tm:Math.abs(x-bar*pr.bt)<=.5}}
+function prEnd(){if(!pr)return;clearInterval(pr.iv);pr=null;$('#pb').textContent='▶ เริ่มฝึก';$('#bd').innerHTML='';$('#cu').textContent=$('#nx').textContent='—'}
+$('#pb').onclick=()=>{if(pr){prEnd();return}
+ const ch=$('#pg').value.trim().split(/[\s,>→–-]+/).filter(Boolean).map(parse);
+ if(!ch.length||ch.includes(null)){say('ลำดับคอร์ดไม่ถูกต้อง ตัวอย่าง: G D Em C');return}
+ const c=au();pr={ch,bpm:Math.min(200,Math.max(40,+$('#bpm').value||80)),bt:+$('#bt').value,rec:{},k:0};pr.t0=pr.nt=c.currentTime+.6;pr.iv=setInterval(sch,25);$('#pb').textContent='■ หยุดฝึก';$('#sc').textContent='เริ่มแล้ว: เลือกคอร์ดให้ตรงแล้วดีดตรงจังหวะแรกของแต่ละห้อง'};
+
+ctl();ui();
+</script></body></html>
